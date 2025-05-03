@@ -21,8 +21,8 @@ git config user.email "developers@erpnext.com"
 git config user.name "frappe-pr-bot"
 
 echo "Setting the correct git remote..."
-# Here, the git remote is a local file path by default. Let's change it to the upstream repo.
-git remote set-url upstream https://github.com/frappe/erpnext.git
+# Here, the git remote is a local file path by default. Let's change it to the origin repo.
+git remote set-url origin https://github.com/soaalice/erpnext-extension.git
 
 echo "Creating a new branch..."
 isodate=$(date -u +"%Y-%m-%d")
@@ -34,7 +34,7 @@ git add erpnext/locale/main.pot
 git commit -m "chore: update POT file"
 
 gh auth setup-git
-git push -u upstream "${branch_name}"
+git push -u origin "${branch_name}"
 
 echo "Creating a PR..."
-gh pr create --fill --base "${BASE_BRANCH}" --head "${branch_name}" --reviewer ${PR_REVIEWER} -R frappe/erpnext
+gh pr create --fill --base "${BASE_BRANCH}" --head "${branch_name}" --reviewer ${PR_REVIEWER} -R soaalice/erpnext-extension

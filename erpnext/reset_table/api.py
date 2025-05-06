@@ -16,6 +16,7 @@ def reset_buying_module():
         "Supplier Quotation Item",
         "Request for Quotation",
         "Request for Quotation Item",
+        "Request for Quotation Supplier",
         "Payment Entry",
         "Payment Entry Reference",
         "Payment Ledger Entry",

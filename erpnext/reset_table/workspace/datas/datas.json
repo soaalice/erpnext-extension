@@ -1,7 +1,7 @@
 {
  "app": "erpnext",
  "charts": [],
- "content": "[{\"id\":\"n2NB35h8RZ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Datas</span>\",\"col\":12}},{\"id\":\"T3MNpv8ies\",\"type\":\"card\",\"data\":{\"card_name\":\"Import\",\"col\":6}},{\"id\":\"XY6czhCGg8\",\"type\":\"card\",\"data\":{\"card_name\":\"Links\",\"col\":6}}]",
+ "content": "[{\"id\":\"n2NB35h8RZ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Datas</span>\",\"col\":12}},{\"id\":\"T3MNpv8ies\",\"type\":\"card\",\"data\":{\"card_name\":\"Manipulations\",\"col\":6}},{\"id\":\"XY6czhCGg8\",\"type\":\"card\",\"data\":{\"card_name\":\"Links\",\"col\":6}}]",
  "creation": "2025-05-01 21:55:45.589989",
  "custom_blocks": [],
  "docstatus": 0,
@@ -50,8 +50,8 @@
    "description": "Data Import/Export Tools\nQuick access to essential links for importing and exporting data across ERPNext modules. Use these tools to efficiently manage bulk records like Customers, Items, Invoices, and more. Ideal for data migration, backup, or bulk updates.\n\n",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Import",
-   "link_count": 1,
+   "label": "Manipulations",
+   "link_count": 2,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
@@ -59,15 +59,25 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Importer les donn\u00e9es",
+   "label": "Importer un csv",
    "link_count": 0,
    "link_to": "custom-import-datas",
    "link_type": "Page",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Importer les donn\u00e9es",
+   "link_count": 0,
+   "link_to": "custom-multi-import",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2025-05-03 18:37:59.701059",
+ "modified": "2025-05-06 08:21:49.738390",
  "modified_by": "Administrator",
  "module": "Reset Table",
  "name": "Datas",

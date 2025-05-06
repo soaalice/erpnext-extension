@@ -5,7 +5,6 @@ frappe.pages['custom-import-datas'].on_page_load = function(wrapper) {
         single_column: true
     });
 
-    // Ajout du formulaire d'import
     let import_form = new ImportForm({
         parent: page.main,
     });

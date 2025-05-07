@@ -10,9 +10,7 @@ from frappe.utils.file_manager import get_file
 @frappe.whitelist()
 def import_csv(file_url):
     try:
-        file_path = frappe.get_site_path('private', 'files', os.path.basename(file_url))
-        print("File path:", file_path)
-        
+        file_path = frappe.get_site_path('private', 'files', os.path.basename(file_url))        
         if not os.path.exists(file_path):
             frappe.throw(_("File not found"))
             
@@ -33,7 +31,7 @@ def import_csv(file_url):
         print("File deleted:", file_path)
         # frappe.delete_doc("File", {"file_url": file_url})
         file_doc = frappe.get_all("File", filters={"file_url": file_url}, fields=["name"])
-        if file_doc:
+        if file_doc and len(file_doc) > 0 and "name" in file_doc[0]:
             frappe.delete_doc("File", file_doc[0].name)
         print("File document deleted from Frappe:", file_url)
 
@@ -65,6 +63,21 @@ def process_row(row):
     """
     print("Processing row:", row)
     print("Row processed successfully")
+    
+def delete_file(file_url):
+    """
+    Suppression d'un fichier
+    """
+    file_path = frappe.get_site_path('private', 'files', os.path.basename(file_url))
+    
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        print("File deleted:", file_path)
+        
+        file_doc = frappe.get_all("File", filters={"file_url": file_url}, fields=["name"])
+        if file_doc:
+            frappe.delete_doc("File", file_doc[0].name)
+            print("File document deleted from Frappe:", file_url)
 
 @frappe.whitelist()
 def process_multi_import(supplier_csv, rfq_csv, rfq_supplier_csv):
@@ -209,28 +222,31 @@ def create_target_warehouse(row):
             frappe.throw(_("Error creating warehouse {0}: {1}").format(row["target_warehouse"], str(e)))
             
 def create_material_request(data):
+    groupedData = groupData(data)
     created_material_requests = []
-    for row in data:
+    for ref, rows in groupedData.items():
         try:
             material_request = frappe.get_doc({
                 "doctype": "Material Request",
-                "material_request_type": row["purpose"],
-                "transaction_date": getdate(row["date"]),
-                "schedule_date": getdate(row["required_by"]),
-                "ref": row["ref"]
+                "material_request_type": rows[0]["purpose"],
+                "transaction_date": parseDate(rows[0]["date"]),
+                "schedule_date": parseDate(rows[0]["required_by"]),
+                "ref": ref
             })
 
-            material_request.append("items", {
-                "item_code": row["item_name"],
-                "qty": float(row["quantity"]),
-                "warehouse": row["target_warehouse"] + " - A"
-            })
-
+            for row in rows:
+                material_request.append("items", {
+                    "item_code": row["item_name"],
+                    "qty": float(row["quantity"]),
+                    "schedule_rate": parseDate(row["date"]),
+                    "warehouse": row["target_warehouse"] + " - A"
+                })
+                
             material_request.insert()
             material_request.submit()
             created_material_requests.append(material_request)
         except Exception as e:
-            frappe.throw(_("Error creating Material Request for reference {0}: {1}").format(row["ref"], str(e)))
+            frappe.throw(_("Error creating Material Request for reference {0}: {1}").format(ref, str(e)))
 
     return created_material_requests
         
@@ -239,20 +255,27 @@ from erpnext.stock.doctype.material_request.material_request import make_request
 def create_rfqs(material_requests, data):
     created_rfqs = []
     for mr in material_requests:
-        print("Creating RFQ for Material Request:", mr)
         try:
             rfq = make_request_for_quotation(mr)
             rfq.message_for_supplier = "Default message for supplier"
+            rfq.ref = mr.ref 
             
+            suppliers = []      
             for row in data:
-                if row["ref_request_quotation"] == mr.ref:
+                if row["ref_request_quotation"] == mr.ref and row["supplier"] not in suppliers:
+                    suppliers.append(row["supplier"])
+                    
+            if suppliers:
+                for supplier in suppliers:
                     rfq.append("suppliers", {
-                        "supplier": row["supplier"],
+                        "supplier": supplier,
+                        "send_email": 0
                     })
-            rfq.ref = mr.ref        
-            rfq.insert()
-            rfq.submit()
-            created_rfqs.append(rfq)
+                
+                rfq.insert()
+                rfq.submit()
+                created_rfqs.append(rfq)
+
         except Exception as e:
             frappe.throw(_("Error creating RFQ for Material Request {0}: {1}").format(mr, str(e)))
 
@@ -273,4 +296,16 @@ def create_supplier_quotations(rfqs, data):
             frappe.throw(_("Error creating Supplier Quotation for RFQ {0}: {1}").format(rfq.name, str(e)))
 
     return created_quotations
-        
+
+from datetime import datetime
+def parseDate(date_str):
+    try:
+        return datetime.strptime(date_str, "%d/%m/%Y").date()
+    except ValueError:
+        raise ValueError(_("Invalid date format {0}. Expected format: dd/mm/yyyy").format(date_str))
+    
+def groupData(data):
+    groupedData = defaultdict(list)
+    for row in data:
+        groupedData[row["ref"]].append(row)
+    return groupedData

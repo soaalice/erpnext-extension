@@ -7,19 +7,27 @@ def reset_buying_module():
         frappe.throw("Seul l'administrateur peut effectuer cette action.")
 
     doctype_list = [
+        "Supplier",
+        "Item",
+        "Item Price",
+        "Item Supplier",
+        "Material Request",
+        "Material Request Item",
+        "Request for Quotation",
+        "Request for Quotation Item",
+        "Request for Quotation Supplier",
+        "Supplier Quotation",
+        "Supplier Quotation Item",
         "Purchase Order",
         "Purchase Order Item",
         "Purchase Invoice",
         "Purchase Invoice Item",
         "Purchase Invoice Advance",
-        "Supplier Quotation",
-        "Supplier Quotation Item",
-        "Request for Quotation",
-        "Request for Quotation Item",
-        "Request for Quotation Supplier",
         "Payment Entry",
         "Payment Entry Reference",
         "Payment Ledger Entry",
+        "Stock Ledger Entry",
+        "GL Entry"
     ]
 
     for doctype in doctype_list:

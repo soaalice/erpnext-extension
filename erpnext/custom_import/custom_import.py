@@ -215,7 +215,8 @@ def create_target_warehouse(row):
         try:
             warehouse = frappe.get_doc({
                 "doctype": "Warehouse",
-                "warehouse_name": row["target_warehouse"]
+                "warehouse_name": row["target_warehouse"],
+                "parent_warehouse": "Tous les entrepôts"
             })
             warehouse.insert()
         except Exception as e:

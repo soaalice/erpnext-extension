@@ -59,7 +59,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "R\u00e9initialiser le module Achat",
+   "label": "R\u00e9initialiser le module Achat/HR",
    "link_count": 0,
    "link_to": "reset-buying",
    "link_type": "Page",
@@ -77,7 +77,7 @@
    "type": "Link"
   }
  ],
- "modified": "2025-05-06 21:25:11.850473",
+ "modified": "2025-06-03 15:39:45.963581",
  "modified_by": "Administrator",
  "module": "Reset Table",
  "name": "Datas",

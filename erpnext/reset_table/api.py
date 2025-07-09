@@ -36,6 +36,22 @@ def reset_buying_module():
     return "Module Buying réinitialisé"
 
 @frappe.whitelist()
+def reset_payroll_module():
+    doctype_list = [
+        "Employee",
+        "Salary Component",
+        "Salary Structure",
+        "Salary Structure Assignment",
+        "Salary Slip",
+        "Payroll Entry",
+    ]
+    
+    for doctype in doctype_list:
+        frappe.db.sql(f"TRUNCATE TABLE `tab{doctype}`")
+    
+    return "Module Payroll réinitialisé"
+
+@frappe.whitelist()
 def reset_doctypes(doctypes):
     if not frappe.session.user == "Administrator":
         frappe.throw("Seul l'administrateur peut effectuer cette action.")
